@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="mr">
 <head>
@@ -5,27 +6,125 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Digital Seva Hub</title>
 <style>
-body{font-family:Arial;background:#f1f5f9;margin:0;text-align:center}
-header{background:#075985;color:white;padding:25px}
-.card{background:white;margin:15px;padding:20px;border-radius:12px}
-button{background:#0284c7;color:white;border:0;padding:12px 25px;border-radius:8px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f2f5fa;color:#172554}
+header{background:linear-gradient(120deg,#063b91,#0879d1);color:white;padding:28px 15px;text-align:center}
+header h1{margin:0;font-size:28px}
+nav{background:white;padding:15px;text-align:center}
+nav a{color:#0754a6;text-decoration:none;margin:10px;font-weight:bold}
+.hero{text-align:center;padding:25px 12px}
+.search{width:90%;max-width:500px;padding:13px;border:1px solid #ccc;border-radius:10px;font-size:16px}
+.container{padding:15px;max-width:1100px;margin:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:13px}
+.card{background:white;padding:18px 10px;border-radius:13px;text-align:center;box-shadow:0 3px 12px #dce3ee}
+.emoji{font-size:35px}
+.card h3{font-size:16px;min-height:38px}
+button{background:#0865bd;color:white;border:0;padding:11px 15px;border-radius:8px;font-weight:bold;cursor:pointer}
+.section{text-align:center;margin:25px 0}
+footer{background:#073b83;color:white;text-align:center;padding:22px;margin-top:30px}
 </style>
 </head>
 <body>
 <header>
 <h1>Digital Seva Hub</h1>
-<p>सर्व डिजिटल सेवा एकाच ठिकाणी</p>
+<p>सर्व ऑनलाइन सेवा एकाच ठिकाणी</p>
+<p>आपली सेवा • आपला विश्वास</p>
 </header>
-<div class="card">
+
+<nav>
+<a href="#">Home</a>
+<a href="#services">Services</a>
+<a href="#contact">Contact</a>
+</nav>
+
+<div class="hero">
 <h2>आपले स्वागत आहे!</h2>
-<p>ऑनलाइन सेवा मिळवण्यासाठी खाली क्लिक करा.</p>
-<button onclick="alert('सेवा लवकरच सुरू होईल!')">सेवा पहा</button>
+<p>तुम्हाला कोणती ऑनलाइन सेवा पाहिजे?</p>
+<input class="search" id="search" placeholder="सेवा शोधा..." oninput="filterServices()">
 </div>
+
+<div class="container" id="services">
+<h2 class="section">आमच्या ऑनलाइन सेवा</h2>
+<div class="grid" id="serviceList"></div>
+</div>
+
+<div class="container" id="contact">
+<h2 class="section">संपर्क करा</h2>
 <div class="card">
-<h3>आधार सेवा</h3>
-<h3>PAN कार्ड</h3>
-<h3>शासकीय योजना</h3>
-<h3>ऑनलाइन फॉर्म</h3>
+<h3>Digital Seva Hub</h3>
+<p>ऑर्डर किंवा माहितीसाठी WhatsApp करा.</p>
+<button onclick="contactUs()">WhatsApp संपर्क</button>
 </div>
+</div>
+
+<footer>
+<p>© 2026 Digital Seva Hub</p>
+<p>All Rights Reserved</p>
+</footer>
+
+<script>
+const OWNER_NUMBER = "91XXXXXXXXXX";
+
+const services = [
+["🪪","PAN Card"],
+["📥","PAN Card Download"],
+["🆔","Aadhaar Download"],
+["💳","Aadhaar PVC Card"],
+["🏥","ABHA Card"],
+["📄","उत्पन्न दाखला"],
+["📜","जात प्रमाणपत्र"],
+["📑","नॉन क्रिमिलेयर"],
+["🏠","रहिवासी दाखला"],
+["📃","अधिवास प्रमाणपत्र"],
+["🗳️","मतदान कार्ड"],
+["🍚","रेशन कार्ड सेवा"],
+["👷","ई-श्रम कार्ड"],
+["🏥","आयुष्मान कार्ड"],
+["🌾","PM Kisan योजना"],
+["🎓","शिष्यवृत्ती अर्ज"],
+["📚","MahaDBT अर्ज"],
+["📝","ऑनलाइन फॉर्म"],
+["📷","फोटो व प्रिंटिंग"],
+["📋","इतर सरकारी सेवा"]
+];
+
+function showServices(items){
+const list=document.getElementById("serviceList");
+list.innerHTML="";
+items.forEach(item=>{
+const card=document.createElement("div");
+card.className="card";
+const emoji=document.createElement("div");
+emoji.className="emoji";
+emoji.textContent=item[0];
+const title=document.createElement("h3");
+title.textContent=item[1];
+const btn=document.createElement("button");
+btn.textContent="ऑर्डर करा";
+btn.onclick=()=>order(item[1]);
+card.append(emoji,title,btn);
+list.appendChild(card);
+});
+}
+
+function order(service){
+openWhatsApp("नमस्कार, मला "+service+" ही सेवा पाहिजे. कृपया संपर्क करा.");
+}
+function contactUs(){
+openWhatsApp("नमस्कार Digital Seva Hub, मला माहिती पाहिजे.");
+}
+function openWhatsApp(message){
+if(OWNER_NUMBER==="91XXXXXXXXXX"){
+alert("आधी कोडमध्ये तुमचा WhatsApp नंबर टाका.");
+return;
+}
+window.open("https://wa.me/"+OWNER_NUMBER+"?text="+encodeURIComponent(message),"_blank");
+}
+function filterServices(){
+const q=document.getElementById("search").value.toLowerCase();
+showServices(services.filter(s=>s[1].toLowerCase().includes(q)));
+}
+showServices(services);
+</script>
 </body>
 </html>
