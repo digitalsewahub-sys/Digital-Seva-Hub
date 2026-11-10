@@ -216,9 +216,25 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     snapshot.forEach((doc) => {
-      const item = document.createElement("pre");
-      item.textContent = JSON.stringify(doc.data(), null, 2);
-      ordersList.appendChild(item);
+      const data = doc.data();
+
+const item = document.createElement("div");
+item.style.cssText = "background:white;border:1px solid #ddd;border-radius:12px;padding:18px;margin:12px 0;color:#222;";
+
+const name = document.createElement("h3");
+name.textContent = "ग्राहक: " + (data.customerName || "नाव उपलब्ध नाही");
+
+const status = document.createElement("p");
+status.textContent = "स्थिती: " + (data.status || "Pending");
+
+const service = document.createElement("p");
+service.textContent = "सेवा: " + (data.service || "माहिती उपलब्ध नाही");
+
+const mobile = document.createElement("p");
+mobile.textContent = "मोबाईल: " + (data.mobile || "माहिती उपलब्ध नाही");
+
+item.append(name, service, mobile, status);
+ordersList.appendChild(item);
     });
   } catch (error) {
     message.textContent = "ऑर्डर लोड झाल्या नाहीत: " + error.message;
