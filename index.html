@@ -126,5 +126,104 @@ showServices(services.filter(s=>s[1].toLowerCase().includes(q)));
 }
 showServices(services);
 </script>
+  <div id="admin-panel" style="padding:20px; margin:20px; border:1px solid #ddd; border-radius:10px;">
+  <h2>ESEWA CONNECT – Admin Login</h2>
+
+  <input id="admin-email" type="email" placeholder="Admin Gmail"
+    style="padding:12px; width:90%; margin:5px;">
+
+  <input id="admin-password" type="password" placeholder="Password"
+    style="padding:12px; width:90%; margin:5px;">
+
+  <button id="login-btn" style="padding:12px 20px; margin:5px;">
+    Login
+  </button>
+
+  <button id="logout-btn" style="padding:12px 20px; display:none;">
+    Logout
+  </button>
+
+  <p id="admin-message"></p>
+  <div id="orders-list"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import {
+  getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import {
+  getFirestore, collection, getDocs
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBfe87zNuAWJFIl9oVLsKxSgMO7XHttVSI",
+  authDomain: "digital-sewa-hub.firebaseapp.com",
+  projectId: "digital-sewa-hub",
+  storageBucket: "digital-sewa-hub.firebasestorage.app",
+  messagingSenderId: "471231063245",
+  appId: "1:471231063245:web:3836ed2be0347abcb0b584"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const ADMIN_UID = "ings5Dm4s6NB8tleqQAaFhJiIVF2";
+
+const message = document.getElementById("admin-message");
+const ordersList = document.getElementById("orders-list");
+
+document.getElementById("login-btn").onclick = async () => {
+  const email = document.getElementById("admin-email").value.trim();
+  const password = document.getElementById("admin-password").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    message.textContent = "Login अयशस्वी: " + error.message;
+  }
+};
+
+document.getElementById("logout-btn").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    message.textContent = "Admin Login करा.";
+    ordersList.innerHTML = "";
+    document.getElementById("login-btn").style.display = "inline-block";
+    document.getElementById("logout-btn").style.display = "none";
+    return;
+  }
+
+  if (user.uid !== ADMIN_UID) {
+    message.textContent = "तुम्हाला Admin परवानगी नाही.";
+    await signOut(auth);
+    return;
+  }
+
+  document.getElementById("login-btn").style.display = "none";
+  document.getElementById("logout-btn").style.display = "inline-block";
+  message.textContent = "Admin Login यशस्वी!";
+
+  try {
+    const snapshot = await getDocs(collection(db, "orders"));
+    ordersList.innerHTML = "";
+
+    if (snapshot.empty) {
+      ordersList.textContent = "अजून ऑर्डर आलेल्या नाहीत.";
+      return;
+    }
+
+    snapshot.forEach((doc) => {
+      const item = document.createElement("pre");
+      item.textContent = JSON.stringify(doc.data(), null, 2);
+      ordersList.appendChild(item);
+    });
+  } catch (error) {
+    message.textContent = "ऑर्डर लोड झाल्या नाहीत: " + error.message;
+  }
+});
+</script>
 </body>
 </html>
